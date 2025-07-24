@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Notion Change Guardian",
     "version": "1.0.0",
-    "description": "Never lose track of your Notion edits. Shows when pages are modified and automatically hides when changes are reverted.",
+    "description": "Prevent accidental edits on your Notion pages. Shows when content is modified and automatically hides when changes are reverted.",
     "author": "Saleem Jaffer",
     "homepage_url": "https://github.com/saleemjaffer/notion-change-guardian",
     "permissions": ["storage", "tabs", "scripting"],

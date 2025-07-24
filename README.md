@@ -1,10 +1,10 @@
 # Notion Change Guardian
 
-A Chrome extension that keeps watch over your Notion page edits, displaying a banner when content changes and automatically hiding it when you revert back to the original. **The extension is disabled by default** and must be enabled per page for privacy and control.
+A Chrome extension that helps you avoid accidental edits on your Notion pages by displaying a banner when content changes and automatically hiding it when you revert back to the original. **The extension is disabled by default** and must be enabled per page for privacy and control.
 
 ## Features
 
-- **Edit Awareness**: Shows a yellow banner when content on your Notion page is modified
+- **Accidental Edit Prevention**: Shows a yellow banner when content on your Notion page is modified
 - **Auto-Hide on Revert**: Banner automatically disappears when you undo changes back to the original state
 - **Baseline Reset**: Dismiss the banner and accept current changes as the new baseline
 - **Disabled by Default**: Extension only monitors pages when explicitly enabled
@@ -13,7 +13,7 @@ A Chrome extension that keeps watch over your Notion page edits, displaying a ba
 
 ## How It Works
 
-The extension creates a snapshot of your Notion page content when first enabled, then continuously compares the current page state against this baseline. When differences are detected, a banner appears. When you revert changes (undo back to original), the banner automatically disappears. You can reset the baseline at any time to make the current state your new "original."
+The extension creates a snapshot of your Notion page content when first enabled, then continuously compares the current page state against this baseline. When differences are detected, a banner appears to alert you of changes. When you revert changes (undo back to original), the banner automatically disappears. You can reset the baseline at any time to make the current state your new "original."
 
 ## Installation
 
