@@ -1,0 +1,44 @@
+{
+    "manifest_version": 3,
+    "name": "Notion Change Guardian",
+    "version": "1.0.0",
+    "description": "Never lose track of your Notion edits. Shows when pages are modified and automatically hides when changes are reverted.",
+    "author": "Your Name",
+    "homepage_url": "https://github.com/yourusername/notion-change-guardian",
+    "permissions": ["storage", "tabs", "scripting"],
+    "host_permissions": [
+      "https://*.notion.so/*",
+      "https://*.notion.site/*",
+      "https://notion.com/*",
+      "https://www.notion.so/*"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "https://*.notion.so/*",
+          "https://*.notion.site/*",
+          "https://notion.com/*",
+          "https://www.notion.so/*"
+        ],
+        "js": ["content.js"],
+        "run_at": "document_idle"
+      }
+    ],
+    "action": {
+      "default_popup": "popup.html",
+      "default_title": "Notion Change Guardian",
+      "default_icon": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+      }
+    },
+    "icons": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  }
