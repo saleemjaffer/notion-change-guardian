@@ -1,28 +1,26 @@
 # Notion Change Guardian
 
-A Chrome extension that keeps watch over your Notion page edits, displaying a banner when content changes and automatically hiding it when you revert back to the original.
+A Chrome extension that keeps watch over your Notion page edits, displaying a banner when content changes and automatically hiding it when you revert back to the original. **The extension is disabled by default** and must be enabled per page for privacy and control.
 
 ## Features
 
 - **Edit Awareness**: Shows a yellow banner when content on your Notion page is modified
 - **Auto-Hide on Revert**: Banner automatically disappears when you undo changes back to the original state
-- **Manual Reset**: Reset button to establish a new baseline from current page state
-- **Multi-Domain Support**: Works across all Notion domains (.notion.so, .notion.site, notion.com)
-- **Lightweight**: Runs quietly in the background without slowing down your workflow
+- **Baseline Reset**: Dismiss the banner and accept current changes as the new baseline
+- **Disabled by Default**: Extension only monitors pages when explicitly enabled
+- **Per-Page Control**: Enable or disable monitoring for each Notion page independently
+- **Clean Interface**: Simple one-button popup that shows status and allows toggle
 
 ## How It Works
 
-1. **Baseline Tracking**: Records the original state of your Notion page
-2. **Change Monitoring**: Watches for content modifications
-3. **Visual Indicator**: Shows "Page Edited" banner when content differs from baseline
-4. **Smart Recovery**: Banner disappears automatically when you undo back to original state
+The extension creates a snapshot of your Notion page content when first enabled, then continuously compares the current page state against this baseline. When differences are detected, a banner appears. When you revert changes (undo back to original), the banner automatically disappears. You can reset the baseline at any time to make the current state your new "original."
 
 ## Installation
 
 ### From Chrome Web Store
 1. Visit the [Chrome Web Store listing](link-will-be-here)
 2. Click "Add to Chrome"
-3. Navigate to any Notion page to start using
+3. Navigate to any Notion page and enable monitoring
 
 ### Manual Installation (Development)
 1. Download or clone this repository
@@ -33,22 +31,27 @@ A Chrome extension that keeps watch over your Notion page edits, displaying a ba
 
 ## Usage
 
-1. **Open any Notion page** - The extension automatically starts monitoring
-2. **Make edits** - A yellow "Page Edited" banner appears at the top
-3. **Undo changes** - Banner automatically disappears when you revert to original content
-4. **Reset baseline** - Click the extension icon and use "Reset Current Page" to set a new baseline
+1. **Open any Notion page** - Extension is disabled by default
+2. **Click the extension icon** - Shows a simple popup with current status
+3. **Click "Enable"** - Starts monitoring the current page
+4. **Make edits** - A yellow "Page Edited" banner appears at the top
+5. **Undo changes** - Banner automatically disappears when you revert to original content
+6. **Reset baseline** - Click "OK" in the banner to set current content as new baseline
+7. **Disable monitoring** - Click extension icon and press "Disable" to stop monitoring
 
 ## Privacy
 
 This extension:
 - Only works on Notion domains
+- Is disabled by default for maximum privacy
+- Only monitors pages you explicitly enable
 - Stores page content locally in your browser for comparison
 - Does not send any data to external servers
 - Does not track your browsing or personal information
 
 ## Support
 
-For issues or feature requests, please visit [GitHub Issues](https://github.com/yourusername/notion-change-guardian/issues).
+For issues or feature requests, please visit [GitHub Issues](https://github.com/saleemjaffer/notion-change-guardian/issues).
 
 ## License
 
