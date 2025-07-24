@@ -410,12 +410,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     isExtensionEnabled = true;
     chrome.storage.local.set({[`enabled_${window.location.href}`]: true}, () => {
       startMonitoring();
+      // Notify background script to update badge
+      chrome.runtime.sendMessage({action: 'updateBadge'});
       sendResponse({success: true, message: "Extension enabled"});
     });
   } else if (request.action === "disable") {
     console.log('🔍 Notion Change Guardian: Disabling extension for this page');
     chrome.storage.local.set({[`enabled_${window.location.href}`]: false}, () => {
       stopMonitoring();
+      // Notify background script to update badge
+      chrome.runtime.sendMessage({action: 'updateBadge'});
       sendResponse({success: true, message: "Extension disabled"});
     });
   } else if (request.action === "getStatus") {
