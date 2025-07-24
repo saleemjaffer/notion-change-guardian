@@ -22,10 +22,6 @@
 - **Open source** - full transparency with public code repository
 
 ### 💡 Perfect For:
-- Content creators who frequently edit Notion documents
-- Teams collaborating on Notion workspaces
-- Students taking notes and want to track changes
-- Writers who want to monitor their draft revisions
 - Anyone who wants to avoid accidental changes and maintain content integrity
 
 ### 🚀 How It Works:
