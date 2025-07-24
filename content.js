@@ -14,6 +14,7 @@ let pageLoadTime = Date.now(); // Track when the page/script loaded
 let settlingPeriod = 4000; // 4 seconds settling period after page load
 let recentExpandCollapseTime = 0; // Track when expand/collapse operations occur
 let expandCollapseGracePeriod = 2000; // 2 seconds after expand/collapse to ignore changes
+let isExtensionEnabled = false; // Track if extension is enabled for this page
 
 function createBanner() {
   if (editBanner) return;
@@ -364,57 +365,20 @@ function simpleHash(str) {
 }
 
 function initializeExtension() {
-  console.log('🔍 Notion Change Guardian: Initializing on', window.location.href);
+  console.log('🔍 Notion Change Guardian: Checking if extension is enabled for', window.location.href);
   
-  // Set up expand/collapse detection
-  setupExpandCollapseDetection();
-  
-  // Clear any existing monitoring interval
-  if (monitoringInterval) {
-    clearInterval(monitoringInterval);
-  }
-  
-  // Wait 2 seconds for page to be stable before starting monitoring
-  setTimeout(() => {
-    chrome.storage.local.get(window.location.href, (data) => {
-      if (data[window.location.href]) {
-        originalContent = data[window.location.href]; // Load original baseline from storage
-        lastContent = originalContent; // Initialize lastContent with original
-        console.log('🔍 Notion Change Guardian: Loaded stored original content');
-      } else {
-        // First visit to this page - get initial content using stable method
-        const possibleSelectors = [
-          '.notion-page-content',
-          '[data-block-id]',
-          '.notion-page-block',
-          'main',
-          '[role="main"]'
-        ];
-        
-        let contentArea = null;
-        for (const selector of possibleSelectors) {
-          contentArea = document.querySelector(selector);
-          if (contentArea) {
-            originalContent = getStableContent(contentArea); // Store original baseline
-            lastContent = originalContent; // Initialize lastContent with original
-            chrome.storage.local.set({ 
-              [window.location.href]: originalContent 
-            });
-            console.log('🔍 Notion Change Guardian: First visit, storing original baseline');
-            break;
-          }
-        }
-        
-        if (!contentArea) {
-          console.log('🔍 Notion Change Guardian: No content area found during initialization');
-        }
-      }
-      
-      // Start monitoring for changes with debounced checking
-      monitoringInterval = setInterval(checkPageContentDebounced, 3000); // Less frequent monitoring
-      console.log('🔍 Notion Change Guardian: Started monitoring with debouncing');
-    });
-  }, 2000); // 2 second delay before initialization
+  // Check if extension is enabled for this page
+  chrome.storage.local.get(`enabled_${window.location.href}`, (data) => {
+    isExtensionEnabled = data[`enabled_${window.location.href}`] || false;
+    
+    if (!isExtensionEnabled) {
+      console.log('🔍 Notion Change Guardian: Extension is disabled for this page');
+      return;
+    }
+    
+    console.log('🔍 Notion Change Guardian: Extension is enabled, initializing monitoring');
+    startMonitoring();
+  });
 }
 
 // Initialize with longer delay for page to settle
@@ -437,14 +401,26 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
-// Handle messages from popup (like test action)
+// Handle messages from popup (enable/disable)
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('🔍 Notion Change Guardian: Received message', request);
   
-  if (request.action === "test") {
-    // Test message to check if content script is working
-    console.log('🔍 Notion Change Guardian: Test message received');
-    sendResponse({success: true, message: "Content script is working!"});
+  if (request.action === "enable") {
+    console.log('🔍 Notion Change Guardian: Enabling extension for this page');
+    isExtensionEnabled = true;
+    chrome.storage.local.set({[`enabled_${window.location.href}`]: true}, () => {
+      startMonitoring();
+      sendResponse({success: true, message: "Extension enabled"});
+    });
+  } else if (request.action === "disable") {
+    console.log('🔍 Notion Change Guardian: Disabling extension for this page');
+    chrome.storage.local.set({[`enabled_${window.location.href}`]: false}, () => {
+      stopMonitoring();
+      sendResponse({success: true, message: "Extension disabled"});
+    });
+  } else if (request.action === "getStatus") {
+    // Return current enabled status
+    sendResponse({enabled: isExtensionEnabled});
   }
   
   // Return true to keep the message channel open for async responses
@@ -564,6 +540,78 @@ function checkForExpandedStateChanges() {
       recentExpandCollapseTime = Date.now();
     }
   });
+}
+
+function startMonitoring() {
+  // Set up expand/collapse detection
+  setupExpandCollapseDetection();
+  
+  // Clear any existing monitoring interval
+  if (monitoringInterval) {
+    clearInterval(monitoringInterval);
+  }
+  
+  // Wait 2 seconds for page to be stable before starting monitoring
+  setTimeout(() => {
+    chrome.storage.local.get(window.location.href, (data) => {
+      if (data[window.location.href]) {
+        originalContent = data[window.location.href]; // Load original baseline from storage
+        lastContent = originalContent; // Initialize lastContent with original
+        console.log('🔍 Notion Change Guardian: Loaded stored original content');
+      } else {
+        // First visit to this page - get initial content using stable method
+        const possibleSelectors = [
+          '.notion-page-content',
+          '[data-block-id]',
+          '.notion-page-block',
+          'main',
+          '[role="main"]'
+        ];
+        
+        let contentArea = null;
+        for (const selector of possibleSelectors) {
+          contentArea = document.querySelector(selector);
+          if (contentArea) {
+            originalContent = getStableContent(contentArea); // Store original baseline
+            lastContent = originalContent; // Initialize lastContent with original
+            chrome.storage.local.set({ 
+              [window.location.href]: originalContent 
+            });
+            console.log('🔍 Notion Change Guardian: First visit, storing original baseline');
+            break;
+          }
+        }
+        
+        if (!contentArea) {
+          console.log('🔍 Notion Change Guardian: No content area found during initialization');
+        }
+      }
+      
+      // Start monitoring for changes with debounced checking
+      monitoringInterval = setInterval(checkPageContentDebounced, 3000); // Less frequent monitoring
+      console.log('🔍 Notion Change Guardian: Started monitoring with debouncing');
+    });
+  }, 2000); // 2 second delay before initialization
+}
+
+function stopMonitoring() {
+  console.log('🔍 Notion Change Guardian: Stopping monitoring');
+  
+  // Clear intervals and timeouts
+  if (monitoringInterval) {
+    clearInterval(monitoringInterval);
+    monitoringInterval = null;
+  }
+  if (contentCheckTimeout) {
+    clearTimeout(contentCheckTimeout);
+    contentCheckTimeout = null;
+  }
+  
+  // Remove banner if it exists
+  removeBanner();
+  
+  // Reset state
+  isExtensionEnabled = false;
 }
 
 } // End of multiple injection prevention

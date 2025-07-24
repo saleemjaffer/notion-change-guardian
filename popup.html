@@ -3,29 +3,60 @@
 <head>
   <style>
     body {
-      width: 200px;
-      padding: 10px;
+      width: 300px;
+      padding: 20px;
       font-family: Arial, sans-serif;
     }
-    button {
-      width: 100%;
-      padding: 8px;
-      margin-top: 10px;
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    
+    h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 16px;
     }
-    button:hover {
-      background-color: #0b7dda;
+    
+    .button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .button-primary {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    .button-primary:hover {
+      background-color: #45a049;
+    }
+    
+    .button-secondary {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .button-secondary:hover {
+      background-color: #da190b;
+    }
+    
+    .button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
   <h3>Notion Change Guardian</h3>
-  <p>Monitoring for changes on Notion pages</p>
-  <button id="test">Test Connection</button>
+  
+  <button id="toggleExtension" class="button button-primary">
+    Enable
+  </button>
+  
   <script src="popup.js"></script>
 </body>
 </html>
